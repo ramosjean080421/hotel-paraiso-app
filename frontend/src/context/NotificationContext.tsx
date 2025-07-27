@@ -11,7 +11,7 @@ interface NotificationState {
 interface NotificationContextType {
   notification: NotificationState;
   showNotification: (message: string, severity: AlertColor) => void;
-  handleClose: () => void;
+  handleClose: (reason?: string) => void;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
@@ -27,7 +27,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     setNotification({ message, severity, open: true });
   };
 
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+  const handleClose = (reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
