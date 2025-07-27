@@ -1,22 +1,25 @@
+// LoginPage.jsx
 import { useState, useEffect } from 'react';
-import { Container, Box, Typography, TextField, Grid, Alert, Paper, Divider } from '@mui/material';
+import { Container, Box, Typography, TextField, Grid, Alert, Paper } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
-import { GoogleLogin } from '@react-oauth/google';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
-  
+
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { showNotification } = useNotification();
+
+  // Obtener la URL base de la API desde las variables de entorno
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     if (location.state?.message) {
@@ -28,15 +31,16 @@ export default function LoginPage() {
     event.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:3001/api/users/login', {
+      // Usar la variable de entorno para la URL
+      const response = await axios.post(`${API_BASE_URL}/users/login`, {
         email,
         password,
       });
-      
+
       login(response.data.token);
       showNotification('¡Inicio de sesión exitoso!', 'success');
       navigate('/');
-      
+
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || 'Hubo un error al iniciar sesión.';
       showNotification(errorMessage, 'error');
@@ -45,26 +49,9 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse: any) => {
-    setLoading(true);
-    try {
-      const response = await axios.post('http://localhost:3001/auth/google-login', {
-        token: credentialResponse.credential,
-      });
-      
-      login(response.data.token);
-      showNotification('¡Inicio de sesión con Google exitoso!', 'success');
-      navigate('/');
-    } catch (error) {
-      showNotification('El inicio de sesión con Google falló.', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <Container component="main" maxWidth="xs">
-      <Paper 
+      <Paper
         elevation={6}
         sx={{
           marginTop: 8,
@@ -124,13 +111,6 @@ export default function LoginPage() {
               </Link>
             </Grid>
           </Grid>
-        </Box>
-        <Divider sx={{ my: 2, width: '100%' }}>O</Divider>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={() => showNotification('El inicio de sesión con Google falló.', 'error')}
-          />
         </Box>
       </Paper>
     </Container>

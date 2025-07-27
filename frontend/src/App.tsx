@@ -1,3 +1,4 @@
+// App.tsx
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
@@ -5,7 +6,7 @@ import { Snackbar, Alert, Fab, Box, Toolbar } from '@mui/material';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider, useNotification } from './context/NotificationContext';
-import AdminUserFormPage from './pages/admin/AdminUserFormPage';
+
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -19,13 +20,22 @@ import AdminRoomsPage from './pages/admin/AdminRoomsPage';
 import AdminRoomFormPage from './pages/admin/AdminRoomFormPage';
 import AdminReservationsPage from './pages/admin/AdminReservationsPage';
 import AdminUsersPage from './pages/admin/AdminUsersPage';
-import { GoogleOAuthProvider } from '@react-oauth/google';
+import AdminUserFormPage from './pages/admin/AdminUserFormPage';
 
 function NotificationManager() {
   const { notification, handleClose } = useNotification();
   return (
-    <Snackbar open={notification.open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-      <Alert onClose={handleClose} severity={notification.severity} sx={{ width: '100%' }} variant="filled">
+    <Snackbar
+      open={notification.open}
+      // autoHideDuration={6000} // Puedes usar notification.autoHideDuration si lo configuraste
+      autoHideDuration={notification.autoHideDuration || 6000} // Usamos el del estado o un fallback
+      onClose={handleClose} // Aquí es correcto, espera (event, reason)
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+    >
+      {/* *** CORRECCIÓN CLAVE AQUÍ *** */}
+      {/* El onClose del Alert solo espera el evento, no la razón. */}
+      {/* Envolvemos handleClose en una función de flecha para adaptar su firma. */}
+      <Alert onClose={(event) => handleClose(event, 'timeout')} severity={notification.severity} sx={{ width: '100%' }} variant="filled">
         {notification.message}
       </Alert>
     </Snackbar>
@@ -79,21 +89,17 @@ function AppContent() {
 }
 
 function App() {
-  const googleClientId = "635672023107-mbevruu0toebdlmsq9quu4ehqetk8gkj.apps.googleusercontent.com";
-
   return (
-    <GoogleOAuthProvider clientId={googleClientId}>
-      <AuthProvider>
-        <NotificationProvider>
-          <ThemeProvider theme={darkTheme}>
-            <CssBaseline />
-            <BrowserRouter>
-              <AppContent />
-            </BrowserRouter>
-          </ThemeProvider>
-        </NotificationProvider>
-      </AuthProvider>
-    </GoogleOAuthProvider>
+    <AuthProvider>
+      <NotificationProvider>
+        <ThemeProvider theme={darkTheme}>
+          <CssBaseline />
+          <BrowserRouter>
+            <AppContent />
+          </BrowserRouter>
+        </ThemeProvider>
+      </NotificationProvider>
+    </AuthProvider>
   );
 }
 
