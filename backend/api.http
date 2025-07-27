@@ -1,0 +1,56 @@
+### Registrar un nuevo usuario
+POST http://localhost:3001/api/users/register
+Content-Type: application/json
+
+{
+  "name": "Usuario de Prueba",
+  "email": "prueba@hotel.com",
+  "password": "passwordSeguro123"
+}
+
+
+### Iniciar sesión de usuario
+POST http://localhost:3001/api/users/login
+Content-Type: application/json
+
+{
+  "email": "prueba@hotel.com",
+  "password": "passwordSeguro123"
+}
+
+
+### Obtener perfil de usuario (ruta protegida)
+GET http://localhost:3001/api/users/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IlVzdWFyaW8gZGUgUHJ1ZWJhIiwicm9sZSI6ImNsaWVudCIsImlhdCI6MTc1Mjk2NTY3NSwiZXhwIjoxNzUyOTY5Mjc1fQ.DPt2P1AP2sOi9-SMhuZPl-8MN4ElAg1G8LjXrXqV1Zg
+
+### Obtener una sola habitación por ID
+GET http://localhost:3001/api/rooms/1
+
+
+### Iniciar sesión como Cliente
+POST http://localhost:3001/api/users/login
+Content-Type: application/json
+
+{
+  "email": "cliente@hotel.com",
+  "password": "clientpassword"
+}
+
+### Iniciar sesión como Administrador
+POST http://localhost:3001/api/users/login
+Content-Type: application/json
+
+{
+  "email": "admin@hotel.com",
+  "password": "adminpassword"
+}
+
+### Probar ruta protegida de Admin
+GET http://localhost:3001/api/admin/test
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IkFkbWluIEhvdGVsIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUzMDQ4MzEwLCJleHAiOjE3NTMwNTE5MTB9.GB0DLBu60M4g3wyn71-uymQyao-C9tXU3JfN1qqlI7Q
+
+
+
+### [ADMIN] Obtener todas las reservas
+GET http://localhost:3001/api/admin/reservations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IkFkbWluIEhvdGVsIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUzMzAwNjA4LCJleHAiOjE3NTMzMDQyMDh9.La_MRpCQhm2KqUG3wQLpgywofoJ1UjVDrjJ4xE8DNBA

@@ -1,0 +1,10 @@
+# backend/.gitignore
+
+# Dependencias
+node_modules
+
+# Archivos de entorno
+.env
+
+# Base de datos local
+*.db
